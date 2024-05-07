@@ -96,6 +96,22 @@ impl<T, K: Key> Slab<T, K> {
 
         ManuallyDrop::into_inner(unsafe { entry.val })
     }
+
+    /// # Safety
+    /// The provided `key` must have been obtained from this instance of [`Slab`] and not removed
+    /// between the insertion and this call.
+    #[inline]
+    pub unsafe fn get(&self, key: K) -> &T {
+        unsafe { &self.entries.get_unchecked(key.as_usize()).val }
+    }
+
+    /// # Safety
+    /// The provided `key` must have been obtained from this instance of [`Slab`] and not removed
+    /// between the insertion and this call.
+    #[inline]
+    pub unsafe fn get_mut(&mut self, key: K) -> &mut T {
+        unsafe { &mut self.entries.get_unchecked_mut(key.as_usize()).val }
+    }
 }
 
 impl<T, K: Key> Default for Slab<T, K> {
