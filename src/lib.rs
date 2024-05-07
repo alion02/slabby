@@ -60,7 +60,7 @@ impl<T, K: Key> Slab<T, K> {
     /// The number of occupied entries must be lower than the maximum value of `K`. This is
     /// trivially true if `K` is [`usize`].
     #[inline]
-    pub unsafe fn insert_unchecked(&mut self, val: T) -> K {
+    pub unsafe fn insert(&mut self, val: T) -> K {
         let next = self.next;
 
         if next.as_usize() == self.entries.len() {
@@ -87,7 +87,7 @@ impl<T, K: Key> Slab<T, K> {
     /// The provided [`key`] must have been obtained from this instance of [`Slab`] and not removed
     /// between the insertion and this call.
     #[inline]
-    pub unsafe fn remove_unchecked(&mut self, key: K) -> T {
+    pub unsafe fn remove(&mut self, key: K) -> T {
         let entry = unsafe { self.entries.get_unchecked_mut(key.as_usize()) };
         let entry = mem::replace(entry, Entry { next: self.next });
 
