@@ -1,6 +1,13 @@
 [package]
 name = "slabby"
 version = "0.1.0"
+authors = ["alion02"]
 edition = "2021"
+rust-version = "1.56.1"
+description = "Maximally efficient allocation and deallocation of a large number of instances of a type."
+repository = "https://github.com/alion02/slabby"
+license = "MIT"
+keywords = ["slab", "allocator", "no_std"]
+categories = ["data-structures", "memory-management", "no-std"]
 
 [dependencies]
