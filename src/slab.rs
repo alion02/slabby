@@ -147,6 +147,13 @@ impl<T, K: Key> Slab<T, K> {
         unsafe { &mut self.slots.get_unchecked_mut(key.as_usize()).val }
     }
 
+    /// Get the key of the next element to be inserted into this [`Slab`].
+    #[inline]
+    #[must_use]
+    pub fn next(&self) -> K {
+        self.next
+    }
+
     /// Get the number of elements contained within this [`Slab`].
     #[inline]
     #[must_use]
