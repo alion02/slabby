@@ -1,12 +1,17 @@
+# slabby
+
+[![crates.io](https://img.shields.io/crates/v/slabby)](https://crates.io/crates/slabby)
+[![docs.rs](https://img.shields.io/docsrs/slabby)](https://docs.rs/slabby)
+
 This crate provides maximally efficient allocation and deallocation of a large number of instances of a single type.
 
 You can choose the size of the key for each instance of a Slab, which allows you to use a type smaller than a pointer to hold the indices to your items, which can improve memory locality, at the cost of imposing a limit on the number of elements that can be stored.
 
 Due to the design of this Slab being optimized for memory usage and efficiency of the common cases (adding, removing, and retrieving elements) it liberally uses unsafe code, cannot provide a safe user-facing API, and some operations are more expensive than expected. All such operations are documented.
 
-# Usage
+## Usage
 
-```rs
+```rust
 let mut slab = slabby::Slab32::new();
 unsafe {
     let key1 = slab.insert(1);
