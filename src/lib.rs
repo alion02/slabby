@@ -57,6 +57,7 @@ impl<T, K: Key> Slab<T, K> {
     }
 
     /// # Safety
+    ///
     /// The number of occupied entries must be lower than the maximum value of `K`. This is
     /// trivially true if `K` is [`usize`].
     #[inline]
@@ -84,6 +85,7 @@ impl<T, K: Key> Slab<T, K> {
     /// Remove a previously inserted element from the [`Slab`]. Returns the contained `T`.
     ///
     /// # Safety
+    ///
     /// The provided `key` must have been obtained from this instance of [`Slab`] and not removed
     /// between the insertion and this call.
     #[inline]
@@ -98,6 +100,7 @@ impl<T, K: Key> Slab<T, K> {
     }
 
     /// # Safety
+    ///
     /// The provided `key` must have been obtained from this instance of [`Slab`] and not removed
     /// between the insertion and this call.
     #[inline]
@@ -106,6 +109,7 @@ impl<T, K: Key> Slab<T, K> {
     }
 
     /// # Safety
+    ///
     /// The provided `key` must have been obtained from this instance of [`Slab`] and not removed
     /// between the insertion and this call.
     #[inline]
