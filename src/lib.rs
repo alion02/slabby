@@ -5,7 +5,11 @@ extern crate alloc;
 mod key;
 
 use alloc::boxed::Box;
-use core::{iter::repeat_with, mem::ManuallyDrop, ptr};
+use core::{
+    iter::repeat_with,
+    mem::{self, ManuallyDrop},
+    ptr,
+};
 
 use key::Key;
 
@@ -75,6 +79,22 @@ impl<T, K: Key> Slab<T, K> {
         entry.val = ManuallyDrop::new(val);
 
         next
+    }
+
+    /// Remove a previously inserted element from the [`Slab`]. Returns the contained `T`.
+    ///
+    /// # Safety
+    /// The provided [`key`] must have been obtained from this instance of [`Slab`] and not removed
+    /// between the insertion and this call.
+    #[inline]
+    pub unsafe fn remove_unchecked(&mut self, key: K) -> T {
+        let entry = unsafe { self.entries.get_unchecked_mut(key.as_usize()) };
+        let entry = mem::replace(entry, Entry { next: self.next });
+
+        self.next = key;
+        self.len = self.len.dec();
+
+        ManuallyDrop::into_inner(unsafe { entry.val })
     }
 }
 

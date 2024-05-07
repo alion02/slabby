@@ -5,6 +5,8 @@ pub trait Key: Copy + Eq {
     fn as_usize(self) -> usize;
     #[must_use]
     fn inc(self) -> Self;
+    #[must_use]
+    fn dec(self) -> Self;
 }
 
 impl Key for u32 {
@@ -18,5 +20,10 @@ impl Key for u32 {
     #[inline]
     fn inc(self) -> Self {
         self + 1
+    }
+
+    #[inline]
+    fn dec(self) -> Self {
+        self - 1
     }
 }
