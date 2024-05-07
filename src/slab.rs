@@ -1,5 +1,6 @@
 use alloc::boxed::Box;
 use core::{
+    fmt,
     iter::repeat_with,
     mem::{self, ManuallyDrop},
     ptr,
@@ -159,5 +160,14 @@ impl<T, K: Key> Default for Slab<T, K> {
     #[must_use]
     fn default() -> Self {
         Self::new()
+    }
+}
+
+impl<T, K: Key> fmt::Debug for Slab<T, K> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("Slab")
+            .field("next", &self.next)
+            .field("len", &self.len)
+            .finish()
     }
 }

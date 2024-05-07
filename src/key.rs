@@ -1,4 +1,6 @@
-pub trait Key: Copy + Eq {
+use core::fmt::Debug;
+
+pub trait Key: Copy + Debug + Eq {
     const ZERO: Self;
 
     #[must_use]
