@@ -65,16 +65,14 @@ impl<T, K: Key> Slab<T, K> {
 
         let entry = unsafe { self.entries.get_unchecked_mut(next.as_usize()) };
 
-        let new_next = if self.next == self.len {
+        self.next = if self.next == self.len {
             self.next.inc()
         } else {
             unsafe { entry.next }
         };
+        self.len = self.len.inc();
 
         entry.val = ManuallyDrop::new(val);
-
-        self.next = new_next;
-        self.len = self.len.inc();
 
         next
     }
