@@ -20,6 +20,38 @@ impl<T, K: Key> Slot<T, K> {
     }
 }
 
+/// A [`Slab`] which can hold some number of elements, depending on the chosen `K`.
+///
+/// # Examples
+///
+/// ```
+/// let mut slab = slabby::Slab32::new();
+/// unsafe {
+///     let key1 = slab.insert(1);
+///     let key2 = slab.insert(2);
+///     let key3 = slab.insert(3);
+///
+///     assert_eq!(slab.get(key1), &1);
+///     assert_eq!(slab.get(key2), &2);
+///     assert_eq!(slab.get(key3), &3);
+///
+///     assert_eq!(slab.remove(key2), 2);
+///     assert_eq!(slab.remove(key1), 1);
+///
+///     assert_eq!(slab.get(key3), &3);
+///
+///     slab.insert(4);
+///     let key5 = slab.insert(5);
+///     slab.insert(6);
+///
+///     assert_eq!(slab.len(), 4);
+///
+///     *slab.get_mut(key5) += 1;
+///     assert_eq!(slab.remove(key5), 6);
+///
+///     assert_eq!(slab.len(), 3);
+/// }
+/// ```
 pub struct Slab<T, K: Key> {
     slots: Box<[Slot<T, K>]>,
     next: K,
@@ -27,6 +59,7 @@ pub struct Slab<T, K: Key> {
 }
 
 impl<T, K: Key> Slab<T, K> {
+    /// Create a new [`Slab`]. No allocations will occur until the first [`Slab::insert`].
     #[inline]
     #[must_use]
     pub fn new() -> Self {
@@ -53,7 +86,7 @@ impl<T, K: Key> Slab<T, K> {
     /// # Safety
     ///
     /// The number of occupied slots must be lower than the maximum value of `K`. This is trivially
-    /// true if `K` is [`usize`].
+    /// true if the maximum value of `K` is greater or equal to that of [`usize`].
     #[inline]
     pub unsafe fn insert(&mut self, val: T) -> K {
         let next = self.next;
@@ -98,6 +131,7 @@ impl<T, K: Key> Slab<T, K> {
     /// The provided `key` must have been obtained from this instance of [`Slab`] and not removed
     /// between the insertion and this call.
     #[inline]
+    #[must_use]
     pub unsafe fn get(&self, key: K) -> &T {
         unsafe { &self.slots.get_unchecked(key.as_usize()).val }
     }
@@ -107,12 +141,14 @@ impl<T, K: Key> Slab<T, K> {
     /// The provided `key` must have been obtained from this instance of [`Slab`] and not removed
     /// between the insertion and this call.
     #[inline]
+    #[must_use]
     pub unsafe fn get_mut(&mut self, key: K) -> &mut T {
         unsafe { &mut self.slots.get_unchecked_mut(key.as_usize()).val }
     }
 
     /// Get the number of elements contained within this [`Slab`].
     #[inline]
+    #[must_use]
     pub fn len(&self) -> K {
         self.len
     }
@@ -120,6 +156,7 @@ impl<T, K: Key> Slab<T, K> {
 
 impl<T, K: Key> Default for Slab<T, K> {
     #[inline]
+    #[must_use]
     fn default() -> Self {
         Self::new()
     }
