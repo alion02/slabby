@@ -1,3 +1,5 @@
+//! Maximally efficient allocation and deallocation of a large number of instances of a type.
+
 #![no_std]
 
 extern crate alloc;
