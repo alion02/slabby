@@ -46,9 +46,9 @@ impl<T, K: Key> Slab<T, K> {
     #[inline(never)]
     fn extend(&mut self) {
         const INITIAL_SIZE: usize = 4;
-        let ptr = &mut self.entries as *mut _;
+        let ptr = &mut self.entries as *mut Box<[_]>;
         unsafe {
-            let b: Box<[Entry<T, K>]> = ptr::read(ptr);
+            let b = ptr::read(ptr);
             let extend_by = if b.len() == 0 { INITIAL_SIZE } else { b.len() };
             let mut vec = b.into_vec();
             vec.extend(repeat_with(Entry::uninit).take(extend_by));
@@ -84,7 +84,7 @@ impl<T, K: Key> Slab<T, K> {
     /// Remove a previously inserted element from the [`Slab`]. Returns the contained `T`.
     ///
     /// # Safety
-    /// The provided [`key`] must have been obtained from this instance of [`Slab`] and not removed
+    /// The provided `key` must have been obtained from this instance of [`Slab`] and not removed
     /// between the insertion and this call.
     #[inline]
     pub unsafe fn remove(&mut self, key: K) -> T {
