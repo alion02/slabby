@@ -11,3 +11,10 @@ keywords = ["slab", "allocator", "no_std"]
 categories = ["data-structures", "memory-management", "no-std"]
 
 [dependencies]
+
+[dev-dependencies]
+criterion = { version = "0.5.1", features = ["html_reports"] }
+
+[[bench]]
+name = "slabby"
+harness = false
