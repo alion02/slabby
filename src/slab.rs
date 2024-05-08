@@ -74,7 +74,7 @@ impl<T, K: Key> Slab<T, K> {
     #[inline(never)]
     fn extend(&mut self) {
         const INITIAL_SIZE: usize = 4;
-        let ptr = &mut self.slots as *mut Box<[_]>;
+        let ptr: *mut _ = &mut self.slots;
         unsafe {
             let b = ptr::read(ptr);
             let extend_by = if b.len() == 0 { INITIAL_SIZE } else { b.len() };
