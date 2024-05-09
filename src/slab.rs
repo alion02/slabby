@@ -15,6 +15,12 @@ union Slot<T, K: Key> {
 
 /// A [`Slab`] which can hold some number of elements, depending on the chosen `K`.
 ///
+/// # Leaks
+///
+/// This type does **not** track elements. In particular, this means that custom [`Drop`] logic
+/// will not run for elements not [`removed`](`Slab::remove`) from the [`Slab`]. This is analogous
+/// to a standard memory leak in a conventional allocator.
+///
 /// # Examples
 ///
 /// ```
