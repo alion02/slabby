@@ -70,17 +70,13 @@ impl<T, K: Key> Slab<T, K> {
     }
 
     #[inline(never)]
-    fn extend(&mut self) {
+    fn extend(b: Box<[Slot<T, K>]>) -> Box<[Slot<T, K>]> {
         const INITIAL_SIZE: usize = 4;
-        let ptr: *mut _ = &mut self.slots;
-        unsafe {
-            let b = ptr::read(ptr);
-            let extend_by = if b.len() == 0 { INITIAL_SIZE } else { b.len() };
-            let mut vec = b.into_vec();
-            vec.reserve_exact(extend_by);
-            vec.set_len(vec.capacity());
-            ptr::write(ptr, vec.into_boxed_slice());
-        }
+        let extend_by = if b.len() == 0 { INITIAL_SIZE } else { b.len() };
+        let mut vec = b.into_vec();
+        vec.reserve_exact(extend_by);
+        unsafe { vec.set_len(vec.capacity()) };
+        vec.into_boxed_slice()
     }
 
     /// # Safety
@@ -92,7 +88,8 @@ impl<T, K: Key> Slab<T, K> {
         let next = self.next;
 
         if next.as_usize() == self.slots.len() {
-            self.extend();
+            let ptr: *mut _ = &mut self.slots;
+            unsafe { ptr::write(ptr, Self::extend(ptr::read(ptr))) };
         }
 
         let slot = unsafe { self.slots.get_unchecked_mut(next.as_usize()) };
