@@ -54,7 +54,7 @@ union Slot<T, K: Key> {
 pub struct Slab<T, K: Key> {
     slots: Box<[Slot<T, K>]>,
     next: K,
-    len: K,
+    peak: K,
 }
 
 impl<T, K: Key> Slab<T, K> {
@@ -65,7 +65,7 @@ impl<T, K: Key> Slab<T, K> {
         Self {
             slots: Box::new([]),
             next: K::ZERO,
-            len: K::ZERO,
+            peak: K::ZERO,
         }
     }
 
@@ -97,12 +97,12 @@ impl<T, K: Key> Slab<T, K> {
 
         let slot = unsafe { self.slots.get_unchecked_mut(next.as_usize()) };
 
-        self.next = if self.next == self.len {
-            self.next.inc()
+        self.next = if self.next == self.peak {
+            self.peak = self.peak.inc();
+            self.peak
         } else {
             unsafe { slot.next }
         };
-        self.len = self.len.inc();
 
         slot.val = ManuallyDrop::new(val);
 
@@ -121,7 +121,6 @@ impl<T, K: Key> Slab<T, K> {
         let slot = mem::replace(slot, Slot { next: self.next });
 
         self.next = key;
-        self.len = self.len.dec();
 
         ManuallyDrop::into_inner(unsafe { slot.val })
     }
@@ -154,10 +153,20 @@ impl<T, K: Key> Slab<T, K> {
     }
 
     /// Get the number of elements contained within this [`Slab`].
+    ///
+    /// # Performance
+    ///
+    /// This function runs in *O*(*p*) time, where *p* is the peak number of elements contained.
     #[inline]
     #[must_use]
     pub fn len(&self) -> K {
-        self.len
+        let mut len = self.peak;
+        let mut next = self.next;
+        while next != self.peak {
+            next = unsafe { self.slots.get_unchecked(next.as_usize()).next };
+            len = len.dec();
+        }
+        len
     }
 }
 
@@ -173,7 +182,7 @@ impl<T, K: Key> fmt::Debug for Slab<T, K> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("Slab")
             .field("next", &self.next)
-            .field("len", &self.len)
+            .field("end", &self.peak)
             .finish()
     }
 }
