@@ -160,8 +160,8 @@ impl<T, K: Key> Slab<T, K> {
     #[inline]
     #[must_use]
     pub fn len(&self) -> K {
-        let mut len = self.peak;
         let mut next = self.next;
+        let mut len = self.peak;
         while next != self.peak {
             next = unsafe { self.slots.get_unchecked(next.as_usize()).next };
             len = len.dec();
