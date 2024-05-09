@@ -15,7 +15,5 @@ pub type Slab8<T> = Slab<T, u8>;
 pub type Slab16<T> = Slab<T, u16>;
 /// A [`Slab`] which can hold up to 4294967295 elements.
 pub type Slab32<T> = Slab<T, u32>;
-/// A [`Slab`] which can hold as many elements as the underlying [`Vec`].
-///
-/// [`Vec`]: alloc::vec::Vec
+/// A [`Slab`] which can hold as many elements as the underlying [`Vec`](alloc::vec::Vec).
 pub type SlabSize<T> = Slab<T, usize>;

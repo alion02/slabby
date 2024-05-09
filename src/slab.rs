@@ -13,12 +13,12 @@ union Slot<T, K: Key> {
     _uninit: (),
 }
 
-/// A [`Slab`] which can hold some number of elements, depending on the chosen `K`.
+/// A `Slab` which can hold some number of elements, depending on the chosen `K`.
 ///
 /// # Leaks
 ///
 /// This type does **not** track elements. In particular, this means that custom [`Drop`] logic
-/// will not run for elements not [`removed`](Slab::remove) from the [`Slab`]. This is analogous
+/// will not run for elements not [`removed`](Slab::remove) from the `Slab`. This is analogous
 /// to a standard memory leak in a conventional allocator.
 ///
 /// # Examples
@@ -58,7 +58,7 @@ pub struct Slab<T, K: Key> {
 }
 
 impl<T, K: Key> Slab<T, K> {
-    /// Create a new [`Slab`]. No allocations will occur until the first [`insert`](Slab::insert).
+    /// Create a new `Slab`. No allocations will occur until the first [`insert`](Slab::insert).
     #[inline]
     #[must_use]
     pub fn new() -> Self {
@@ -109,11 +109,11 @@ impl<T, K: Key> Slab<T, K> {
         next
     }
 
-    /// Remove a previously inserted element from the [`Slab`]. Returns the contained `T`.
+    /// Remove a previously inserted element from the `Slab`. Returns the contained `T`.
     ///
     /// # Safety
     ///
-    /// The provided `key` must have been obtained from this instance of [`Slab`] and not removed
+    /// The provided `key` must have been obtained from this instance of `Slab` and not removed
     /// between the insertion and this call.
     #[inline]
     pub unsafe fn remove(&mut self, key: K) -> T {
@@ -127,7 +127,7 @@ impl<T, K: Key> Slab<T, K> {
 
     /// # Safety
     ///
-    /// The provided `key` must have been obtained from this instance of [`Slab`] and not removed
+    /// The provided `key` must have been obtained from this instance of `Slab` and not removed
     /// between the insertion and this call.
     #[inline]
     #[must_use]
@@ -137,7 +137,7 @@ impl<T, K: Key> Slab<T, K> {
 
     /// # Safety
     ///
-    /// The provided `key` must have been obtained from this instance of [`Slab`] and not removed
+    /// The provided `key` must have been obtained from this instance of `Slab` and not removed
     /// between the insertion and this call.
     #[inline]
     #[must_use]
@@ -145,14 +145,14 @@ impl<T, K: Key> Slab<T, K> {
         unsafe { &mut self.slots.get_unchecked_mut(key.as_usize()).val }
     }
 
-    /// Get the key of the next element to be inserted into this [`Slab`].
+    /// Get the key of the next element to be inserted into this `Slab`.
     #[inline]
     #[must_use]
     pub fn next(&self) -> K {
         self.next
     }
 
-    /// Get the number of elements contained within this [`Slab`].
+    /// Get the number of elements contained within this `Slab`.
     ///
     /// # Performance
     ///
