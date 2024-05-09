@@ -1,7 +1,6 @@
 use alloc::boxed::Box;
 use core::{
     fmt,
-    iter::repeat_with,
     mem::{self, ManuallyDrop},
     ptr,
 };
@@ -11,14 +10,7 @@ use crate::key::Key;
 union Slot<T, K: Key> {
     val: ManuallyDrop<T>,
     next: K,
-    uninit: (),
-}
-
-impl<T, K: Key> Slot<T, K> {
-    #[inline]
-    fn uninit() -> Self {
-        Self { uninit: () }
-    }
+    _uninit: (),
 }
 
 /// A [`Slab`] which can hold some number of elements, depending on the chosen `K`.
@@ -79,7 +71,8 @@ impl<T, K: Key> Slab<T, K> {
             let b = ptr::read(ptr);
             let extend_by = if b.len() == 0 { INITIAL_SIZE } else { b.len() };
             let mut vec = b.into_vec();
-            vec.extend(repeat_with(Slot::uninit).take(extend_by));
+            vec.reserve_exact(extend_by);
+            vec.set_len(vec.capacity());
             ptr::write(ptr, vec.into_boxed_slice());
         }
     }
