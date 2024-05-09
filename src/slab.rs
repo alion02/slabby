@@ -58,7 +58,7 @@ pub struct Slab<T, K: Key> {
 }
 
 impl<T, K: Key> Slab<T, K> {
-    /// Create a new [`Slab`]. No allocations will occur until the first [`Slab::insert`].
+    /// Create a new [`Slab`]. No allocations will occur until the first [`insert`](`Slab::insert`).
     #[inline]
     #[must_use]
     pub fn new() -> Self {
