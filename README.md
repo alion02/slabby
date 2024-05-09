@@ -1,5 +1,7 @@
 # slabby
 
+#### Not production ready. Do not use in production.
+
 [![crates.io](https://img.shields.io/crates/v/slabby)](https://crates.io/crates/slabby)
 [![docs.rs](https://img.shields.io/docsrs/slabby)](https://docs.rs/slabby)
 
