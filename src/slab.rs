@@ -177,3 +177,18 @@ impl<T, K: Key> fmt::Debug for Slab<T, K> {
             .finish()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn does_not_forget_list() {
+        let mut slab = crate::Slab32::new();
+        unsafe {
+            let [a, _, c, d] = [10, 11, 12, 13].map(|v| slab.insert(v));
+            slab.remove(a);
+            slab.remove(c);
+            slab.insert(14);
+            assert_ne!(slab.insert(15), d);
+        }
+    }
+}
