@@ -18,7 +18,7 @@ union Slot<T, K: Key> {
 /// # Leaks
 ///
 /// This type does **not** track elements. In particular, this means that custom [`Drop`] logic
-/// will not run for elements not [`removed`](`Slab::remove`) from the [`Slab`]. This is analogous
+/// will not run for elements not [`removed`](Slab::remove) from the [`Slab`]. This is analogous
 /// to a standard memory leak in a conventional allocator.
 ///
 /// # Examples
@@ -58,7 +58,7 @@ pub struct Slab<T, K: Key> {
 }
 
 impl<T, K: Key> Slab<T, K> {
-    /// Create a new [`Slab`]. No allocations will occur until the first [`insert`](`Slab::insert`).
+    /// Create a new [`Slab`]. No allocations will occur until the first [`insert`](Slab::insert).
     #[inline]
     #[must_use]
     pub fn new() -> Self {
